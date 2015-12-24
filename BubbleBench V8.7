@@ -1,0 +1,203 @@
+'''
+Bubble Bench 8.7 by Will Shamblin
+'''
+"""
+````````````````````````````````````````````````````````````````````````````````````````
+`                                      ```` `                                          `
+`                                  ````     `                                          `
+`                               ````        `                    ``                    `
+`                           ````            `                   ````                   `
+`                        ````               `                 ``    ``                 `
+`                    `````                  `                ``      ``                `
+`                 `````                     `               ``        ``               `
+`             `````                         `              ``          ``              `
+`          `````                            `             ``            ``             `
+`       ````                                `            ``              ``            `
+`     ```                                   `           ``                ``           `
+`       ````                                `          ``                  ``          `
+`          ````                             `         ``                    ``         `
+`             ````                          `       ``                        ``       `
+`                 ````                      `      ``                          ``      `
+`                    ````                   `     ``                            ``     `
+`                        ```                `    ``                              ``    `
+`                           ````            `   ``                                ``   `
+`                               ```         `  ``                                  ``  `
+`                                  ````     ` ``                                    `` `
+`                                     ````  ``                                        ``
+```````````````````````````````````````````8.7``````````````````````````````````````````
+``                                         ``  ````                                    `
+` ``                                     `` `    ````                                  `
+`  ``                                   ``  `       ````                               `
+`   ``                                 ``   `           ````                           `
+`    ``                               ``    `              ````                        `
+`     ``                             `      `                  ```                     `
+`      ``                          ``       `                     ````                 `
+`        `                        ``        `                        ````              `
+`         ``                     ``         `                            ````          `
+`          ``                   ``          `                               ````       `
+`           ``                 ``           `                                  ```     `
+`            ``               ``            `                               ````       `
+`             ``             ``             `                             ````         `
+`              ``           ``              `                         `````            `
+`               ``         ``               `                      `````               `
+`                 ``      ``                `                  `````                   `
+`                  ``    ``                 `               `````                      `
+`                    ````                   `            ````                          `
+`                     ``                    `         ````                             `
+`                                           `     ````                                 `
+`                                           ` ````                                     `
+````````````````````````````````````````````````````````````````````````````````````````
+                             `         BubbleBench         `
+                             `         Version 8.7         `
+                             `                             `
+                             ```````````````````````````````
+"""
+import sys
+import time
+import math
+import datetime
+from datetime import datetime
+import random
+import timeit
+import os
+import subprocess
+import threading
+import urllib2
+version=87
+percent=0
+i=0
+def score(times):
+	return format((sum(times) / float(len(times))), '.20f')
+def spinner(i):
+	print '['+'===='*i+'>'+' '*(28-i*4)+']',str(round(float(i)*float(14.2857142857)))+'%'
+sys.stdout.write('Enter u for upgrade, b for benchmark or q to quit. \n')
+while True:	
+	x = raw_input('--> ')
+	if x.lower() == 'q':
+		exit()
+	if x.lower() == 'u':
+		sys.stdout.write('This will use the Internet to download a new version, continue? y / n\n')
+		while True:
+			confirmation=raw_input('--> ')
+			if confirmation.lower() == 'y':
+				break
+			if confirmation.lower() == 'n':
+				exit()
+			else: 
+				print 'Please type y or n'
+				continue
+		
+		FNULL = open(os.devnull, 'w')
+		try:
+			output = urllib2.urlopen("http://www.shamblin.org", timeout=10).getcode()
+		except Exception as e:
+		        print 'Cannot update: not connected to the Internet. Either that or our server is down, in that case try again in an hour.'
+			exit()
+		newver=int((subprocess.check_output('curl https://www.shamblin.org/~will/BBcurrent_ver', shell=True).decode('ascii')))		
+		if newver > version:
+			orig = open(sys.argv[0], 'w')
+			orig.truncate()
+			x = (subprocess.check_output('curl https://www.shamblin.org/~will/BubbleBench-Newest_Version', shell=True).decode('ascii'))
+		        orig.write(x)
+			print "Finished updating, now updated!"
+			exit()
+		if newver == version:
+			print "Already Up to date!"	
+	if x.lower() == 'b':
+		print "Benchmarking: CPU"
+		print "Benchmarking: stage I : Towers of Hanoi"
+		spinner(1)
+		def hanoi(ndisks, startPeg=1, endPeg=3):
+		    if ndisks:
+		        hanoi(ndisks-1, startPeg, 6-startPeg-endPeg)
+		        hanoi(ndisks-1, 6-startPeg-endPeg, endPeg)
+		def tme():
+			hanoi(ndisks=8)
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageI = score(scrs)
+		print "Stage I score:", stageI
+		
+		print "Benchmarking: stage II : Sieve of Eratosthenes"
+		spinner(2)
+		def eratosthenes(n):
+		    multiples = set()
+		    for i in range(2, n+1):
+		        if i not in multiples:
+		            multiples.update(range(i*i, n+1, i))
+
+		def tme():
+			eratosthenes(600)
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageII = score(scrs)
+		print "Stage II score:", stageII
+
+		print "Benchmarking: stage III : Iteration"
+		spinner(3)
+		def tme():
+		    i=0
+		    x=3
+		    while i < 14:
+		             x=x**2
+		             i+=1
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageIII = score(scrs)
+		print "Stage III score:", stageIII
+
+		print "Benchmarking: stage IV : Random Number Generation"
+		spinner(4)
+		def tme():
+			i=0
+			while i < 150:
+				random.randrange(10000)
+				i+=1
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageIV = score(scrs)
+		print "Stage IV score:",stageIV
+
+		print "Benchmarking: stage V : Estimating PI"
+		spinner(5)
+		def tme():
+			total = 200
+			n = i = 0
+			while i < total:
+			     i+=1
+			     y = random.random()
+			     x = random.random()
+			     if math.sqrt(x**2 + y**2) <= 1:
+			        n+=1
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageV = score(scrs)
+		print "Stage V score", stageV
+		
+		print "Benchmarking: Memory"
+		print "Benchmarking: stage VI : File Writing"
+		spinner(6)
+		target = open ('newfile', 'a')
+		def tme():
+		        target.write('3.14159265358979323846264338327950288419716939937510582')
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageVI = score(scrs)
+		target.close()
+		print "Stage VI score", stageVI
+		print "Benchmarking : stage VII : File Reading"
+		spinner(7)
+		def tme():
+			target = open ('newfile', 'r')
+			target.close()
+		t = timeit.Timer(tme)
+		scrs = t.repeat(1000, 60)
+		stageVII = score(scrs)
+		os.remove('newfile')
+		print "Stage VII score",stageVII
+		print "Total CPU score:", format(float(stageI)+float(stageII)+float(stageIII)+float(stageIV)+float(stageV), '.20f'), "(Less is better)"
+		print "Total Memory score:", format(float(stageVI)+float(stageVII), '.20f'), "(Less is better)"
+		exit()
+	else:
+		print "Please type u, b or q"
+		continue
